@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>여성 얼굴형 분석 결과</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+    <style>
+        /* CSS를 <style> 태그로 분리하고 모바일 친화적으로 조정 */
+        body {
+            text-align: center;
+            margin-top: 20px; 
+            padding: 0 15px; 
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', Arial, sans-serif;
+            /* 🌟 디자인 변경: 매우 밝고 따뜻한 아이보리 배경 */
+            background-color: #FDFCF5; 
+            /* 🌟 디자인 변경: 깊고 진한 커피 브라운 텍스트 */
+            color: #4C3C3C;
+        }
+        h1 {
+            font-size: 24px; 
+            font-weight: 700;
+            /* 🌟 디자인 변경: 짙은 톤의 브라운 */
+            color: #5D4037; 
+            margin-bottom: 10px;
+        }
+        #result {
+            font-size: 30px; 
+            font-weight: 800;
+            /* 🌟 디자인 변경: 결과 강조 색상 (에스프레소 브라운) */
+            color: #5D4037;
+            margin-top: 15px;
+        }
+        #desc {
+            font-size: 16px; 
+            color: #4C3C3C; /* 일반 텍스트 색상 */
+            margin-top: 8px;
+        }
+        button {
+            padding: 12px 20px; 
+            font-size: 16px;
+            /* 🌟 디자인 변경: 톤 다운된 카라멜 브라운 */
+            background: #C4A983; 
+            color: #FFFFFF;
+            border: 1px solid #C4A983; /* 통일된 테두리 */
+            border-radius: 5px; /* index.html과 동일한 모서리 */
+            cursor: pointer;
+            margin-top: 30px; 
+            transition: background-color 0.3s, box-shadow 0.3s;
+            font-weight: 600;
+        }
+        button:hover {
+            /* 🌟 디자인 변경: 호버 시 더 진한 브라운 */
+            background-color: #91755C;
+            border: 1px solid #91755C;
+        }
+
+        /* 상세 정보 컨테이너 스타일 */
+        #detail-container {
+            margin-top: 25px;
+            padding: 20px;
+            /* 🌟 디자인 변경: 연한 브라운 테두리 */
+            border: 1px solid #D1C5B0;
+            border-radius: 8px;
+            /* 🌟 디자인 변경: 부드러운 밀크 브라운 배경 */
+            background-color: #EBE5D8;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .detail-title {
+            font-weight: 700;
+            /* 🌟 디자인 변경: 차분한 중간 브라운 */
+            color: #A0522D;
+            font-size: 18px; /* 가독성 위해 약간 키움 */
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        .recommendation {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        .key-points {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .key-points li {
+            margin-bottom: 8px;
+            color: #4C3C3C;
+        }
+        
+        /* 💡 추천 이미지 갤러리 스타일 */
+        #image-gallery {
+            display: flex; 
+            justify-content: space-around; 
+            gap: 10px; 
+            margin-top: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; 
+        }
+        .recommend-image {
+            width: calc(33.33% - 10px); 
+            max-width: 120px; 
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+            /* 🌟 디자인 변경: 연한 테두리 */
+            border: 3px solid #D1C5B0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* 모바일 환경 최적화 (400px 이하 화면에서 1열로 표시) */
+        @media (max-width: 400px) {
+            .recommend-image {
+                width: 100%; 
+                max-width: none;
+                margin-bottom: 10px;
+            }
+        }
+        /* 기존 CSS 구조 유지 */
+    </style>
+</head>
+<body>
+
+<h1>여성 얼굴형 분석 결과</h1>
+
+<div id="result"></div>
+<div id="desc"></div>
+
+<div id="detail-container">
+    
+    <div class="detail-title">추천 헤어스타일</div>
+    <div id="image-gallery">
+        </div>
+    
+    <div class="detail-title">얼굴형 특징</div>
+    <div id="feature-content" class="recommendation"></div>
+
+    <div class="detail-title">헤어스타일 추천 전략</div>
+    <ul id="strategy-content" class="key-points"></ul>
+</div>
+
+
+<div style="height:30px;"></div>
+
+<button
+    id="go-home-button"
+    onclick="goToHome()">
+    처음으로
+</button>
+
+<button 
+    id="go-other-button"
+    onclick="goToOtherStyles()">
+    다른 얼굴형 헤어스타일 추천 보기
+</button>
+
+<script>
+// 🌟 JavaScript 데이터 구조: image 경로는 삭제하지 않고 recommendationImages만 사용 🌟
+const resultData = {
+    "둥근형": {
+        // image: "assets/F/둥근형", // 참고 이미지 경로는 이제 사용되지 않습니다.
+        recommendationImages: [ 
+            "assets/F/둥근형/둥근형.jfif", 
+            "assets/F/둥근형/둥근형2.jfif", 
+            "assets/F/둥근형/둥근형3.jfif"
+        ], 
+        features: "둥근형은 계란형보다 얼굴 길이가 짧고 가로 폭이 넓어, 전체적으로 귀엽고 어려 보이는 동안 이미지를 가진 얼굴형인데요. 대표적인 연예인으로 김다미, 뉴진스 하니, 오마이걸 유아 님이 있습니다. 이런 분들은 얼굴이 작아도 볼살이나 관자놀이의 여백 때문에 자칫 얼굴이 조금 널데데해 보일 수 있습니다. 그래서 얼굴의 둥근 느낌을 상쇄할 수 있도록 직선적인 느낌*을 더해주고, 뾰족한 질감을 살려주는 헤어스타일링을 추천해 드립니다!",
+        strategies: [
+            "슬릭한 스트레이트 헤어 (둥근 라인을 직선으로 중화)",
+            "하이 레이어드 컷 (가벼운 질감으로 뾰족한 느낌 연출)",
+            "굵은 물결펌 (볼륨이 과하지 않게 흐르는 웨이브)"
+        ]
+    },
+    "긴형": {
+        // image: "images/face_long_F.jpg",
+        recommendationImages: [ 
+            "assets/F/긴형/긴형.jfif", 
+            "assets/F/긴형/긴형2.jfif", 
+            "assets/F/긴형/긴형3.jfif"
+        ], 
+        features: "긴형은 얼굴의 가로 폭보다 세로 길이가 길어, 지적이고 성숙하며 세련된 이미지를 주는 얼굴형인데요. 대표적인 연예인으로 이지아, 소녀시대 티파니, 크리스탈 님이 있습니다. 이런 분들은 긴 생머리를 할 경우 시선이 아래로 떨어져 얼굴이 더 길어 보이거나 밋밋해 보일 수 있습니다. 그래서 세로 느낌을 끊어주고 가로 볼륨을 살려주는 헤어스타일링을 해주시는 걸 추천해 드립니다! 생머리를 할 경우 시선이 아래로 떨어져 얼굴이 더 길어 보이거나 밋밋해 보일 수 있습니다. 세로 느낌을 끊어주고 가로 볼륨을 살려주는 헤어스타일링을 추천해 드립니다.",
+        strategies: [
+            "중단발 레이어드 컷 (시선을 위쪽으로 끌어올림)",
+            "턱 선 기장의 단발 (긴 얼굴형 보완에 탁월)",
+            "전체적인 볼륨펌 (옆 볼륨을 살려 가로 폭 확장)",
+            "비대칭 가르마 (얼굴의 긴 비율을 깨주는 효과)"
+        ]
+    },
+    "각진형": {
+        // image: "images/face_square_F.jpg",
+        recommendationImages: [ 
+            "assets/F/각진형/각진형.png", 
+            "assets/F/각진형/각진형2.jfif", 
+            "assets/F/각진형/각진형4.jfif"
+        ], 
+        features: "각진형은 하관이나 광대가 발달하여 이목구비가 뚜렷하고 고급스러운 분위기를 풍기는 얼굴형인데요. 대표적인 연예인으로 정은채, 김혜윤, 김태리 님이 있습니다. 이런 분들은 턱선의 굴곡이 명확하기 때문에, 직선적인 머리를 하면 인상이 다소 강하거나 딱딱해 보일 수 있습니다. 그래서 각진 골격을 부드럽게 감싸줄 수 있는 곡선감을 주는 헤어스타일링을 해주시는 걸 추천해 드립니다!",
+        strategies: [
+            "C컬 레이어드 컷 (턱선을 부드럽게 감싸는 곡선)",
+            "히피펌 / 빈티지펌 / 물결펌 (강한 웨이브로 시선 분산)",
+            "사이드뱅 (광대와 턱의 여백을 자연스럽게 커버)"
+        ]
+    },
+    "계란형": {
+        // image: "images/face_oval_F.jpg",
+        recommendationImages: [ 
+            "assets/F/계란형/계란형1.jfif", 
+            "assets/F/계란형/계란형2.jfif", 
+            "assets/F/계란형/계란형4.jfif"
+        ], 
+        features: "계란형은 얼굴의 가로, 세로 비율이 이상적이고 턱선이 갸름하여 대부분의 헤어스타일을 완벽하게 소화하는 얼굴형인데요. 대표적인 연예인으로 소녀시대 윤아, 에스파 카리나, 츄 님이 있습니다. 이런 분들은 특별히 보안해야할 부분은 없으며 얼굴을 너무 많이 가리는 스타일은 추천하지 않습니다. 예쁜 얼굴형이 잘 드러나도록 얼굴을 부드럽게 감싸는 스타일링을 해주시는 걸 추천해 드립니다! 보안해야 할 부분은 없으며, 예쁜 얼굴형이 잘 드러나도록 얼굴을 부드럽게 감싸는 스타일링을 해주시는 걸 추천해 드립니다.",
+        strategies: [
+            "이마를 드러내는 스타일 (앞머리로 얼굴을 가리지 않기)",
+            "그레이스펌 (우아하게 얼굴 라인을 감싸주는 웨이브)",
+            "리프펌 (얼굴 흐름을 따라 자연스럽게 넘어가는 스타일)"
+        ]
+    }
+};
+
+// URL에서 label 가져오기
+const params = new URLSearchParams(window.location.search);
+const label = params.get("label");
+
+const data = resultData[label];
+
+// 결과 출력 (데이터가 있을 때만)
+if (data) {
+    document.getElementById("result").innerHTML = label + " 얼굴형";
+    // document.getElementById("desc").innerHTML = data.intro; // intro가 데이터에 없으므로 주석 처리
+
+    // 🌟 추천 이미지 갤러리 출력 로직 (변경 없음) 🌟
+    const gallery = document.getElementById("image-gallery");
+    gallery.innerHTML = ''; 
+    
+    if (data.recommendationImages && data.recommendationImages.length > 0) {
+        data.recommendationImages.forEach((imagePath, index) => {
+            const img = document.createElement("img");
+            img.src = imagePath;
+            img.alt = `${label} 추천 헤어스타일 ${index + 1}`;
+            img.classList.add("recommend-image");
+            gallery.appendChild(img);
+        });
+    }
+
+    // 특징 및 전략 출력
+    document.getElementById("feature-content").innerHTML = data.features;
+    
+    const strategyList = document.getElementById("strategy-content");
+    strategyList.innerHTML = ''; 
+    data.strategies.forEach(strategy => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span style="color: #A0522D; font-weight: 700;">●</span> ${strategy}`;
+        strategyList.appendChild(li);
+    });
+
+} else {
+    document.getElementById("result").innerHTML = "분석 오류";
+    document.getElementById("desc").innerHTML = "얼굴형 정보를 불러올 수 없습니다. 다시 시도해 주세요.";
+    document.getElementById("detail-container").style.display = "none";
+}
+
+function goToHome()
+ {
+    window.location.href = "index.html";
+ }
+
+function goToOtherStyles() {
+    // 원하는 페이지 이름으로 변경 가능
+    window.location.href = "other_F.html";
+}
+</script>
+
+</body>
+</html>

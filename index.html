@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>얼굴형 AI 분석 (규칙 기반)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <style>
+        /* 폰트 및 기본 설정 */
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', Arial, sans-serif;
+            
+            /* 중앙 정렬을 위한 Flexbox */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            
+            text-align: center;
+            padding: 30px 15px; 
+            background-color: #FDFCF5; 
+            color: #4C3C3C; 
+            min-height: 100vh; 
+        }
+        h1 {
+            font-size: 30px;
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 40px; 
+            color: #5D4037; 
+        }
+        /* 버튼 공통 스타일 */
+        button {
+            padding: 12px 28px; 
+            font-size: 16px; 
+            border: 1px solid #C4A983; 
+            border-radius: 5px; 
+            cursor: pointer;
+            color: #FFFFFF; 
+            transition: all 0.3s ease;
+            font-weight: 600; 
+            background: #c4A983; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); 
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            background: #91755c; 
+            color: #FFFFFF; 
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #go-home-button {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        /* 성별 선택 버튼 영역 */
+        #gender-area {
+            display: none; 
+            margin-top: 25px;
+            display: flex;
+        }
+        .gender-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 40px;
+        }
+        #female-icon, #male-icon {
+            width: 120px; 
+            height: 120px; 
+            margin-bottom: 8px;
+            object-fit: contain; 
+}
+        #gender-area button {
+            width: 130px; 
+            border-radius: 5px;
+            margin: 0;
+        }
+        #gender-area button:first-child {
+            margin-right: 20px;
+        }
+        /* 웹캠 컨테이너 스타일 */
+        #webcam-container {
+            width: 350px; 
+            height: 350px; 
+            border-radius: 50%; 
+            margin: 50px auto; 
+            
+            overflow: hidden; 
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+            border: 8px solid #91755C; 
+            display: none; /* 초기에는 숨김 */
+            justify-content: center;
+            align-items: center;
+            position: relative; 
+        }
+        /* MediaPipe가 생성하는 캔버스 스타일 */
+        #webcam-container canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* 분석 중 메시지 스타일 */
+        #loading-message {
+            display:none; 
+            font-size:18px; 
+            font-weight:600; 
+            color: #A0522D; 
+            margin-top:40px;
+        }
+        /* 결과 텍스트 스타일 */
+        #result-text {
+            display: none; 
+            font-size: 28px; 
+            font-weight: 800;
+            color: #5D4037; 
+            margin-top: 30px;
+        }
+        /* 디버그 비율 표시 */
+        #ratio-display {
+            display: none; 
+            font-family: monospace;
+            font-size: 14px;
+            color: #888888; 
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+<h1>얼굴형 AI 분석</h1>
+
+<div id="main-image-area" style="margin-bottom: 30px;">
+    <img src="assets/대문.png" alt="메인 사진" 
+        style="width: 100%; max-width: 400px; height: auto; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+</div>
+<p id="description-text" style="font-size: 18px; font-weight: 500; color: #5D4037; margin-top: 10px; margin-bottom: 40px;">
+    AI로 얼굴형 진단과 스타일 추천까지 받아보세요!
+</p>
+
+<div id="start-area">
+    <button type="button" onclick="showGenderButtons()">
+         분석 시작
+        </button>
+</div>
+
+<div id="gender-area" style="display:none; margin-top:25px;">
+    <div class="gender-option">
+        <img src="assets/여자.png" alt="여성 아이콘" class="gender-icon" id="female-icon">
+        <button type="button" onclick="startProcess('F')">
+            여성
+        </button>
+    </div>
+
+    <div class="gender-option">
+        <img src="assets/남자.png" alt="남성 아이콘" class="gender-icon" id="male-icon">
+        <button type="button" onclick="startProcess('M')">
+            남성
+        </button>
+    </div>
+</div>
+
+<div id="webcam-container" style="display:none;">
+    <video id="webcam-video" playsinline style="display: none;"></video> 
+</div>
+
+<div id="loading-message">
+    웹캠 로딩 중... 
+</div>
+
+<div id="result-text"></div>
+<div id="ratio-display"></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+
+<script>
+    // ==========================================================
+    // 1. 사용자 지정 임계값 및 규칙 (유지)
+    // ==========================================================
+    const TH_F = {
+        J_W_SQUARE: 1.10, 
+        L_W_LONG: 1.545,
+        L_W_ROUND: 1.30,
+        J_W_ROUND: 1.10
+    };
+    const TH_M = {
+        J_W_SQUARE: 1.10, 
+        L_W_LONG: 1.545,
+        L_W_ROUND: 1.25,
+        J_W_ROUND: 1.11 
+    };
+    const LANDMARK_INDICES = {
+        'forehead_center': 10,
+        'chin_tip': 152,
+        'cheek_left': 35,
+        'cheek_right': 265,
+        'jaw_left': 58,
+        'jaw_right': 288
+    };
+
+    let faceMesh, canvasElement, canvasCtx;
+    let selectedGender = ''; 
+
+    const webcamContainer = document.getElementById("webcam-container");
+    const loadingMessage = document.getElementById("loading-message");
+    const videoElement = document.getElementById('webcam-video'); 
+    const genderArea = document.getElementById("gender-area"); 
+    const startArea = document.getElementById("start-area");
+    const mainImageArea = document.getElementById("main-image-area");
+    const descriptionText = document.getElementById("description-text");
+    let stream; 
+    let currentClassificationResult = "분석 중..."; 
+
+    //-----------------------------------
+    // 2. '분석 시작' 버튼 클릭 시 실행되는 함수 
+    //-----------------------------------
+    function showGenderButtons() {
+        // 1. 대문 사진과 설명 문구 숨기기
+        mainImageArea.style.display = "none";
+        descriptionText.style.display = "none";
+        
+        // 2. '분석 시작' 버튼 숨기기
+        startArea.style.display = "none";
+        
+        // 3. 성별 선택 버튼 표시하기
+        genderArea.style.display = "flex"; 
+    }
+
+    // -----------------------------------
+    // 3. 성별 선택 후 실행되는 함수
+    // -----------------------------------
+    async function startProcess(gender) {
+        selectedGender = gender;
+        
+        // 성별 선택 버튼 숨기기
+        genderArea.style.display = "none";
+        
+        // 웹캠 컨테이너 및 로딩 메시지 표시
+        webcamContainer.style.display = "flex";
+        loadingMessage.style.display = "block";
+        
+        // 10초 타임아웃 설정
+        setTimeout(finishPrediction, 10000); 
+
+        await initMediaPipe();
+    }
+    
+    //-----------------------------------
+    // 4. MediaPipe 초기화 및 웹캠 설정 
+    //-----------------------------------
+    async function initMediaPipe() {
+        // 캔버스 설정
+        canvasElement = document.createElement('canvas');
+        canvasElement.width = 350; 
+        canvasElement.height = 350;
+        webcamContainer.appendChild(canvasElement);
+        canvasCtx = canvasElement.getContext('2d');
+        
+        // 1. 웹캠 스트림 요청
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: {
+                    width: { ideal: 640 },
+                    height: { ideal: 480 }
+                } 
+            });
+            videoElement.srcObject = stream;
+            
+            await new Promise((resolve) => {
+                videoElement.onloadedmetadata = resolve;
+            });
+            videoElement.play();
+        } catch (error) {
+            loadingMessage.innerText = "웹캠 접근 권한이 거부되었거나 웹캠을 찾을 수 없습니다.";
+            console.error("웹캠 접근 오류:", error);
+            currentClassificationResult = "분석 오류";
+            return;
+        }
+
+        // 2. Face Mesh 모델 로드 및 설정
+        faceMesh = new FaceMesh({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+        }});
+        
+        faceMesh.setOptions({
+            maxNumFaces: 1,
+            refineLandmarks: true,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        faceMesh.onResults(onResults);
+        
+        loadingMessage.innerText = `얼굴형 분석 중...`;
+
+        // 3. 비디오 프레임 반복 처리 시작
+        sendToFaceMesh();
+    }
+
+    // 프레임을 MediaPipe로 반복 전송하는 함수 
+    async function sendToFaceMesh() {
+        if (!videoElement.paused && !videoElement.ended) {
+            
+            // 비율 유지 및 중앙 정렬 로직 (화면 늘어짐 방지)
+            const videoWidth = videoElement.videoWidth;
+            const videoHeight = videoElement.videoHeight;
+            const canvasSize = canvasElement.width; 
+
+            const ratio = Math.max(canvasSize / videoWidth, canvasSize / videoHeight);
+            const scaledWidth = videoWidth * ratio;
+            const scaledHeight = videoHeight * ratio;
+            const x = (canvasSize - scaledWidth) / 2;
+            const y = (canvasSize - scaledHeight) / 2;
+
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasSize, canvasSize); 
+            
+            // 1. 좌우 반전 적용 (미러링)
+            canvasCtx.scale(-1, 1); 
+            canvasCtx.translate(-canvasSize, 0);
+
+            // 2. 비율을 유지하며 중앙에 그림
+            canvasCtx.drawImage(videoElement, x, y, scaledWidth, scaledHeight);
+            canvasCtx.restore();
+
+            // 반전된 이미지를 MediaPipe에 전달
+            await faceMesh.send({image: canvasElement});
+        }
+        requestAnimationFrame(sendToFaceMesh);
+    }
+    
+    //-----------------------------------
+    // 5. 유클리드 거리 계산 함수 
+    //-----------------------------------
+    function calculateDistance(p1, p2) {
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    //-----------------------------------
+    // 6. 얼굴형 분류 함수 
+    //-----------------------------------
+    function classifyFaceShape(l_w_ratio, j_w_ratio, gender) {
+        const TH = gender === 'F' ? TH_F : TH_M; 
+
+        // 분기 순서: 각진형 → 긴형 → 둥근형 → 계란형
+
+        // 1. 각진형 검사
+        if (j_w_ratio >= TH.J_W_SQUARE) {
+            return "각진형 (Square)";
+        } 
+        
+        // 2. 긴형 검사
+        else if (l_w_ratio >= TH.L_W_LONG) {
+            return "긴형 (Long)";
+        } 
+        
+        // 3. 둥근형 검사
+        else if (l_w_ratio <= TH.L_W_ROUND && j_w_ratio <= TH.J_W_ROUND) {
+            return "둥근형 (Round)";
+        }
+        
+        // 4. 계란형 (나머지)
+        else {
+            return "계란형 (Oval)";
+        }
+    }
+
+    //-----------------------------------
+    // 7. MediaPipe 결과 처리 함수 (onResults)
+    //-----------------------------------
+    function onResults(results) {
+        const landmarkColor = '#A0522D'; 
+        
+        let ratioInfo = "분석 대기";
+        
+        if (results.multiFaceLandmarks) {
+            
+            const landmarks = results.multiFaceLandmarks[0];
+            
+            // 랜드마크 시각화
+            drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION,
+                             {color: '#D1A5A570', lineWidth: 1});
+            drawConnectors(canvasCtx, landmarks, FACEMESH_CONTOURS,
+                             {color: landmarkColor, lineWidth: 2});
+            
+            try {
+                const p = {};
+                for (const key in LANDMARK_INDICES) {
+                    p[key] = landmarks[LANDMARK_INDICES[key]];
+                }
+                
+                const L = calculateDistance(p['forehead_center'], p['chin_tip']);
+                const W = calculateDistance(p['cheek_left'], p['cheek_right']);
+                const J = calculateDistance(p['jaw_left'], p['jaw_right']);
+                
+                if (W > 0) {
+                    const l_w_ratio = L / W;
+                    const j_w_ratio = J / W;
+                    
+                    currentClassificationResult = classifyFaceShape(l_w_ratio, j_w_ratio, selectedGender);
+                    
+                    ratioInfo = `L/W: ${l_w_ratio.toFixed(3)}, J/W: ${j_w_ratio.toFixed(3)}`;
+
+                } else {
+                     currentClassificationResult = "분석 불가 (폭 0)";
+                }
+
+            } catch (e) {
+                console.error("계산 오류:", e);
+                currentClassificationResult = "계산 오류";
+            }
+        } else {
+            currentClassificationResult = "얼굴 감지 중...";
+        }
+    }
+    
+    //-----------------------------------
+    // 8. 결과 확정 및 페이지 이동 함수 
+    //-----------------------------------
+    function finishPrediction() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        
+        let finalLabel = currentClassificationResult;
+
+        // 10초 후에도 감지 실패 상태이면 "분석 오류"로 처리
+        if (finalLabel.includes("감지 중") || finalLabel.includes("분석 중") || finalLabel.includes("계산 오류") || finalLabel.includes("분석 불가")) {
+            finalLabel = "분석 오류";
+        } else {
+            finalLabel = finalLabel.split(' ')[0]; 
+        }
+        
+        // 결과 페이지 URL 결정
+        let resultPage = '';
+        if (selectedGender === 'F') {
+            resultPage = 'result_F.html';
+        } else if (selectedGender === 'M') {
+            resultPage = 'result_M.html';
+        } else {
+            resultPage = 'result.html';
+        }
+
+        window.location.href = resultPage + "?label=" + encodeURIComponent(finalLabel);
+    }
+</script>
+
+</body>
+</html>

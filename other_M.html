@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>남성 얼굴형별 헤어스타일 추천 (탭 방식)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <style>
+        /* 기본 스타일 */
+        body {
+            text-align: center;
+            margin-top: 20px; 
+            padding: 0 10px; 
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #fcf8f3;
+        }
+        h1 {
+            color: #583e2e; 
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        /* 1. 탭 메뉴 스타일 */
+        #tab-menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px; 
+            border-bottom: 2px solid #e6ccb3; 
+            width: 95%;
+            max-width: 700px; /* 콘텐츠와 너비 맞춤 */
+            margin: 0 auto 30px auto;
+        }
+
+        .tab-button {
+            padding: 12px 25px; /* 남성 탭은 텍스트가 짧아 크기를 조금 줄였습니다. */
+            font-size: 16px;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            border-bottom: 3px solid transparent; 
+            color: #583e2e;
+            font-weight: 600;
+            transition: border-bottom-color 0.3s, background-color 0.3s;
+            margin: 0 5px;
+        }
+
+        .tab-button:hover {
+            background-color: #f9f0e8;
+        }
+
+        .tab-button.active {
+            border-bottom: 3px solid #b8860b; 
+            color: #b8860b; 
+        }
+        
+        /* 2. 탭 콘텐츠 영역 스타일 */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 3. 얼굴형 섹션 및 그리드 스타일 (탭 방식에서는 100% 너비) */
+        .face-type-grid {
+            display: block;
+            width: 95%; 
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .face-type-section {
+            width: 100%; 
+            padding: 25px; 
+            border: 1px solid #e6ccb3; 
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(88, 62, 46, 0.1); 
+            background-color: #ffffff;
+            box-sizing: border-box; 
+            text-align: left; 
+            margin-bottom: 20px; 
+        }
+
+        .face-type-section h2 {
+            color: #583e3e; 
+            border-bottom: 2px solid #b8860b; 
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        /* 4. 이미지 갤러리 스타일 (3장) */
+        .image-gallery {
+            display: flex;
+            justify-content: space-between; 
+            margin-bottom: 25px;
+        }
+
+        .image-gallery img {
+            width: 32%; 
+            height: auto;
+            aspect-ratio: 1/1; 
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+
+        .recommendation {
+            font-weight: bold;
+            color: #b8860b;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        .style-list {
+            list-style-type: '👉 '; 
+            padding-left: 20px;
+            margin-top: 5px;
+            line-height: 1.6;
+        }
+        .style-list li{
+            color: #333;
+        }
+
+        /* 5. 처음으로 버튼 스타일 */
+        #to-top-button {
+            display: block;
+            width: 120px; 
+            margin: 40px auto; 
+            padding: 10px 20px; 
+            background-color: #583e2e;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px; 
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
+            text-decoration: none; 
+        }
+
+        #to-top-button:hover {
+            background-color: #7b5e4c;
+            transform: translateY(-2px);
+        }
+
+        /* 📱 미디어 쿼리: 모바일 화면 (너비 768px 이하) */
+        @media (max-width: 768px) {
+            .tab-button {
+                padding: 10px 10px; 
+                font-size: 14px;
+                margin: 0 1px;
+            }
+            #tab-menu {
+                max-width: 100%;
+            }
+            .image-gallery {
+                flex-direction: column; 
+            }
+            .image-gallery img {
+                width: 100%;
+                margin-bottom: 10px; 
+            }
+            .face-type-section {
+                font-size: 14px;
+            }
+            .face-type-section h2 {
+                font-size: 18px;
+            }
+            #to-top-button {
+                width: 100px; 
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>남성 얼굴형별 헤어스타일 추천</h1>
+
+<div id="tab-menu">
+    <button class="tab-button active" onclick="openTab('round')">둥근형</button>
+    <button class="tab-button" onclick="openTab('long')">긴형</button>
+    <button class="tab-button" onclick="openTab('square')">각진형</button>
+    <button class="tab-button" onclick="openTab('oval')">계란형</button>
+</div>
+
+<div class="face-type-grid">
+
+    <div id="round" class="face-type-section tab-content active">
+        <h2>둥근형</h2>
+        <div class="image-gallery">
+            <img src="assets/M/둥근형/남자둥근형.jfif" alt="둥근형 추천 스타일 1">
+            <img src="assets/M/둥근형/남자둥근형2.jfif" alt="둥근형 추천 스타일 2">
+            <img src="assets/M/둥근형/남자둥근형3.jfif" alt="둥근형 추천 스타일 3">
+        </div>
+        <p>둥근형은 가로와 세로 비율이 비슷하고 턱선이 부드러워, 전체적으로 선하고 어려 보이는 동안 이미지를 가진 얼굴형인데요. 대표적인 연예인으로 송중기, 정해인, 디오(도경수) 님이 있습니다.</p>
+        <p>얼굴 골격이 부드럽기 때문에 이목구비가 흐릿해 보이거나 얼굴이 넙데데해 보일 수 있습니다. 그래서 세로 선을 강조하여 갸름해 보이게 하고, 직선적인 느낌을 더해 남성미를 살려주는 헤어스타일링을 추천해 드립니다!</p>
+        
+        <p class="recommendation">추천 스타일링 전략 (세로 강조, 슬림 라인)</p>
+        <ul class="style-list">
+            <li>아이비리그컷 / 리젠트컷 (이마를 시원하게 드러내 세로 길이감 확보)</li>
+            <li>포마드 스타일 (윗머리 볼륨을 살려 시선을 위로 분산)</li>
+            <li>옆머리 다운펌 (옆 부피를 최대한 줄여 슬림한 라인 만들기)</li>
+        </ul>
+    </div>
+
+    <div id="long" class="face-type-section tab-content">
+        <h2>긴형</h2>
+        <div class="image-gallery">
+            <img src="assets/M/긴형/남자긴형1.jpg" alt="긴형 추천 스타일 1">
+            <img src="assets/M/긴형/남자긴형2.jpg" alt="긴형 추천 스타일 2">
+            <img src="assets/M/긴형/남자긴형3.jpg" alt="긴형 추천 스타일 3">
+        </div>
+        <p>긴형은 가로 폭에 비해 세로 길이가 길어, 지적이고 성숙하며 시크한 이미지를 주는 얼굴형인데요. 대표적인 연예인으로 김우빈, 강동원, 이광수 님이 있습니다.</p>
+        <p>이마를 완전히 드러내거나 옆머리를 너무 짧게 칠 경우 얼굴이 더 길어 보일 수 있습니다. 그래서 위쪽 볼륨은 적당히 조절하고 옆 볼륨을 채워 밸런스를 맞춰주는 헤어스타일링을 추천해 드립니다!</p>
+        
+        <p class="recommendation">추천 스타일링 전략 (세로 축소, 옆 볼륨 확장)</p>
+        <ul class="style-list">
+            <li>댄디컷 / 시스루 댄디컷 (앞머리로 이마를 덮어 얼굴 길이 축소)</li>
+            <li>소프트 투블럭 (옆머리를 하얗게 밀지 않고 기장감을 남겨 채우기)</li>
+            <li>가르마펌 (5:5) (가로 비율을 넓혀 보여 긴 얼굴 보완)</li>
+        </ul>
+    </div>
+
+    <div id="square" class="face-type-section tab-content">
+        <h2>각진형</h2>
+        <div class="image-gallery">
+            <img src="assets/M/각진형/남자각진형1.jfif" alt="각진형 추천 스타일 1">
+            <img src="assets/M/각진형/남자각진형2.jfif" alt="각진형 추천 스타일 2">
+            <img src="assets/M/각진형/남자각진형3.jfif" alt="각진형 추천 스타일 3">
+        </div>
+        <p>각진형은 턱선과 광대가 발달하여 강인하고 남성적인 분위기를 물씬 풍기는 얼굴형인데요. 대표적인 연예인으로 이동욱, 박서준, 여진구 님이 있습니다.</p>
+        <p>하관이 강해 자칫 인상이 너무 강하거나 딱딱해 보일 수 있습니다. 그래서 각진 턱과 광대를 부드럽게 커버할 수 있는 곡선감(Curve)과 질감 처리가 들어간 헤어스타일링을 해주시는 걸 추천해 드립니다!</p>
+        
+        <p class="recommendation">추천 스타일링 전략 (곡선, 부드러운 커버)</p>
+        <ul class="style-list">
+            <li>섀도우펌 (S컬 웨이브로 강한 인상을 부드럽게 중화)</li>
+            <li>리프컷 (긴 기장감으로 광대와 턱 라인을 자연스럽게 감싸기)</li>
+            <li>애즈펌 (이마를 살짝만 노출해 부드러운 분위기 연출)</li>
+        </ul>
+    </div>
+
+    <div id="oval" class="face-type-section tab-content">
+        <h2>계란형</h2>
+        <div class="image-gallery">
+            <img src="assets/M/계란형/남자계란형1.jfif" alt="계란형 추천 스타일 1">
+            <img src="assets/M/계란형/남자계란형2.jfif" alt="계란형 추천 스타일 2">
+            <img src="assets/M/계란형/남자계란형3.jfif" alt="계란형 추천 스타일 3">
+        </div>
+        <p>계란형은 얼굴의 가로, 세로 비율이 이상적이고 턱선이 갸름하여 대부분의 헤어스타일을 완벽하게 소화하는 축복받은 얼굴형인데요. 대표적인 연예인으로 차은우, 송강, 뷔 님이 있습니다.</p>
+        <p>장점인 얼굴형을 너무 가리지 않는 것이 중요합니다. 이마를 드러내어 이목구비를 강조하거나 트렌디한 스타일을 과감하게 시도해보시는 걸 추천해 드립니다!</p>
+        
+        <p class="recommendation">추천 스타일링 전략 (장점 드러내기, 트렌디함)</p>
+        <ul class="style-list">
+            <li>가일컷 / 드롭컷 (트렌디하면서도 얼굴형의 장점을 살림)</li>
+            <li>시스루 댄디컷 (꾸민 듯 안 꾸민 듯 자연스러운 매력)</li>
+            <li>히피펌 / 베이비펌 (다양한 컬 스타일도 무리 없이 소화)</li>
+        </ul>
+    </div>
+    
+</div>
+
+<button id="to-top-button" onclick="goToIndex()">
+    처음으로
+</button>
+
+<script>
+    function openTab(tabName) {
+        // 모든 탭 내용 숨기기
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(content => {
+            content.classList.remove('active');
+        });
+
+        // 모든 탭 버튼에서 활성 클래스 제거
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(button => {
+            button.classList.remove('active');
+        });
+
+        // 선택된 탭 내용 표시
+        document.getElementById(tabName).classList.add('active');
+
+        // 클릭된 버튼 활성화
+        const activeButtons = document.querySelectorAll('.tab-button');
+        activeButtons.forEach(button => {
+            if (button.getAttribute('onclick').includes(`'${tabName}'`)) {
+                button.classList.add('active');
+            }
+        });
+    }
+
+    // index.html로 이동하는 함수
+    function goToIndex() {
+        window.location.href = 'index.html'; 
+    }
+
+    // 초기 로드 시 첫 번째 탭 ('round')을 활성화
+    // HTML에서 이미 'round'에 active 클래스를 주었으므로 이 함수 호출은 선택 사항입니다.
+    // openTab('round'); 
+</script>
+
+</body>
+</html>
