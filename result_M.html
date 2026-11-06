@@ -6,41 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 
     <style>
-        /* CSS를 <style> 태그로 분리하고 모바일 친화적으로 조정 */
         body {
             text-align: center;
-            margin-top: 20px; /* 모바일에서 상단 여백 줄임 */
-            padding: 0 15px; /* 좌우 여백 추가 */
+            margin-top: 20px; 
+            padding: 0 15px; 
             font-family: Arial, sans-serif;
             background-color: #FDFCF5;
             color: #333;
         }
         h1 {
-            font-size: 24px; /* 모바일 제목 크기 조정 */
-            color: #5D4037; /* 여성 페이지에 어울리는 색상으로 변경 */
+            font-size: 24px; 
+            color: #5D4037; 
             margin-bottom: 10px;
         }
         #result {
-            font-size: 30px; /* 결과 텍스트 크기 유지 */
+            font-size: 30px;
             font-weight: 700;
             color: #5D4037;
             margin-top: 15px;
         }
         #desc {
-            font-size: 16px; /* 설명 텍스트 크기 조정 */
+            font-size: 16px; 
             color: #4C3C3C;
             margin-top: 8px;
         }
         button {
             padding: 12px 20px; 
             font-size: 16px;
-            background: #C4A983; /* 버튼 색상 변경 */
+            background: #C4A983; 
             color: #FFFFFF;
             border: 1px solid #C4A983; 
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 30px; /* 상단 여백 조정 */
-            /* 버튼 클릭 효과 추가 */
+            margin-top: 30px; 
             transition: background-color 0.3s, box-shadow 0.3s;
             font-weight: 600;
         }
@@ -77,18 +75,18 @@
             color: #4C3C3C;
         }
         
-        /* 💡 추천 이미지 갤러리 스타일 */
+        /* 추천 이미지 갤러리 스타일 */
         #image-gallery {
-            display: flex; /* 가로 정렬 */
-            justify-content: space-around; /* 이미지 사이 간격 균등 분배 */
-            gap: 10px; /* 이미지 간 최소 간격 */
+            display: flex; 
+            justify-content: space-around; 
+            gap: 10px; 
             margin-top: 15px;
             margin-bottom: 20px;
-            flex-wrap: wrap; /* 모바일에서 줄 바꿈 */
+            flex-wrap: wrap; 
         }
         .recommend-image {
-            width: calc(33.33% - 10px); /* 3개 이미지가 한 줄에 오도록 설정 */
-            max-width: 120px; /* 최대 크기 제한 */
+            width: calc(33.33% - 10px); 
+            max-width: 120px; 
             height: auto;
             border-radius: 8px;
             object-fit: cover;
@@ -98,7 +96,7 @@
         /* 모바일 환경 최적화 (400px 이하 화면에서 1열로 표시) */
         @media (max-width: 400px) {
             .recommend-image {
-                width: 100%; /* 작은 화면에서는 이미지를 100%로 키워 1열로 만듦 */
+                width: 100%; 
                 max-width: none;
                 margin-bottom: 10px;
             }
@@ -141,10 +139,9 @@
 </button>
 
 <script>
-// 🌟 JavaScript 데이터 구조: image 경로는 삭제하지 않고 recommendationImages만 사용 🌟
 const resultData = {
     "둥근형": {
-        // image: "assets/F/둥근형", // 참고 이미지 경로는 이제 사용되지 않습니다.
+        // image: "assets/M/둥근형"
         recommendationImages: [ 
             "assets/M/둥근형/남자둥근형.jfif", 
             "assets/M/둥근형/남자둥근형2.jfif", 
@@ -158,7 +155,7 @@ const resultData = {
         ]
     },
     "긴형": {
-        // image: "images/face_long_F.jpg",
+        // image: "assets/M/긴형"
         recommendationImages: [ 
             "assets/M/긴형/남자긴형1.jpg", 
             "assets/M/긴형/남자긴형2.jpg", 
@@ -172,7 +169,7 @@ const resultData = {
         ]
     },
     "각진형": {
-        // image: "images/face_square_F.jpg",
+        // image: "assets/M/각진형"
         recommendationImages: [ 
             "assets/M/각진형/남자각진형1.jfif", 
             "assets/M/각진형/남자각진형2.jfif", 
@@ -186,7 +183,7 @@ const resultData = {
         ]
     },
     "계란형": {
-        // image: "images/face_oval_F.jpg",
+        // image: "assets/M/계란형"
         recommendationImages: [ 
             "assets/M/계란형/남자계란형1.jfif", 
             "assets/M/계란형/남자계란형2.jfif", 
@@ -210,9 +207,8 @@ const data = resultData[label];
 // 결과 출력 (데이터가 있을 때만)
 if (data) {
     document.getElementById("result").innerHTML = label + " 얼굴형";
-    // document.getElementById("desc").innerHTML = data.intro; // intro가 데이터에 없으므로 주석 처리
 
-    // 🌟 추천 이미지 갤러리 출력 로직 (변경 없음) 🌟
+    // 추천 이미지 갤러리 출력 로직
     const gallery = document.getElementById("image-gallery");
     gallery.innerHTML = ''; 
     
@@ -250,7 +246,6 @@ function goToHome()
 
 // 버튼 클릭 시 다른 페이지 이동
 function goToOtherStyles() {
-    // 원하는 페이지 이름으로 변경 가능
     window.location.href = "other_M.html";
 }
 </script>

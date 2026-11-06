@@ -6,51 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 
     <style>
-        /* CSS를 <style> 태그로 분리하고 모바일 친화적으로 조정 */
         body {
             text-align: center;
             margin-top: 20px; 
             padding: 0 15px; 
             font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', Arial, sans-serif;
-            /* 🌟 디자인 변경: 매우 밝고 따뜻한 아이보리 배경 */
             background-color: #FDFCF5; 
-            /* 🌟 디자인 변경: 깊고 진한 커피 브라운 텍스트 */
             color: #4C3C3C;
         }
         h1 {
             font-size: 24px; 
             font-weight: 700;
-            /* 🌟 디자인 변경: 짙은 톤의 브라운 */
             color: #5D4037; 
             margin-bottom: 10px;
         }
         #result {
             font-size: 30px; 
             font-weight: 800;
-            /* 🌟 디자인 변경: 결과 강조 색상 (에스프레소 브라운) */
             color: #5D4037;
             margin-top: 15px;
         }
         #desc {
             font-size: 16px; 
-            color: #4C3C3C; /* 일반 텍스트 색상 */
+            color: #4C3C3C; 
             margin-top: 8px;
         }
         button {
             padding: 12px 20px; 
             font-size: 16px;
-            /* 🌟 디자인 변경: 톤 다운된 카라멜 브라운 */
             background: #C4A983; 
             color: #FFFFFF;
-            border: 1px solid #C4A983; /* 통일된 테두리 */
-            border-radius: 5px; /* index.html과 동일한 모서리 */
+            border: 1px solid #C4A983; 
+            border-radius: 5px; 
             cursor: pointer;
             margin-top: 30px; 
             transition: background-color 0.3s, box-shadow 0.3s;
             font-weight: 600;
         }
         button:hover {
-            /* 🌟 디자인 변경: 호버 시 더 진한 브라운 */
             background-color: #91755C;
             border: 1px solid #91755C;
         }
@@ -59,19 +52,16 @@
         #detail-container {
             margin-top: 25px;
             padding: 20px;
-            /* 🌟 디자인 변경: 연한 브라운 테두리 */
             border: 1px solid #D1C5B0;
             border-radius: 8px;
-            /* 🌟 디자인 변경: 부드러운 밀크 브라운 배경 */
             background-color: #EBE5D8;
             text-align: left;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         .detail-title {
             font-weight: 700;
-            /* 🌟 디자인 변경: 차분한 중간 브라운 */
             color: #A0522D;
-            font-size: 18px; /* 가독성 위해 약간 키움 */
+            font-size: 18px; 
             margin-top: 15px;
             margin-bottom: 8px;
         }
@@ -88,7 +78,7 @@
             color: #4C3C3C;
         }
         
-        /* 💡 추천 이미지 갤러리 스타일 */
+        /* 추천 이미지 갤러리 스타일 */
         #image-gallery {
             display: flex; 
             justify-content: space-around; 
@@ -103,7 +93,6 @@
             height: auto;
             border-radius: 8px;
             object-fit: cover;
-            /* 🌟 디자인 변경: 연한 테두리 */
             border: 3px solid #D1C5B0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
@@ -115,7 +104,6 @@
                 margin-bottom: 10px;
             }
         }
-        /* 기존 CSS 구조 유지 */
     </style>
 </head>
 <body>
@@ -154,10 +142,9 @@
 </button>
 
 <script>
-// 🌟 JavaScript 데이터 구조: image 경로는 삭제하지 않고 recommendationImages만 사용 🌟
 const resultData = {
     "둥근형": {
-        // image: "assets/F/둥근형", // 참고 이미지 경로는 이제 사용되지 않습니다.
+        // image: "assets/F/둥근형"
         recommendationImages: [ 
             "assets/F/둥근형/둥근형.jfif", 
             "assets/F/둥근형/둥근형2.jfif", 
@@ -171,7 +158,7 @@ const resultData = {
         ]
     },
     "긴형": {
-        // image: "images/face_long_F.jpg",
+        // image: "assets/F/긴형"
         recommendationImages: [ 
             "assets/F/긴형/긴형.jfif", 
             "assets/F/긴형/긴형2.jfif", 
@@ -186,7 +173,7 @@ const resultData = {
         ]
     },
     "각진형": {
-        // image: "images/face_square_F.jpg",
+        // image: "assets/F/각진형"
         recommendationImages: [ 
             "assets/F/각진형/각진형.png", 
             "assets/F/각진형/각진형2.jfif", 
@@ -200,7 +187,7 @@ const resultData = {
         ]
     },
     "계란형": {
-        // image: "images/face_oval_F.jpg",
+        // image: "assets/F/계란형"
         recommendationImages: [ 
             "assets/F/계란형/계란형1.jfif", 
             "assets/F/계란형/계란형2.jfif", 
@@ -224,9 +211,8 @@ const data = resultData[label];
 // 결과 출력 (데이터가 있을 때만)
 if (data) {
     document.getElementById("result").innerHTML = label + " 얼굴형";
-    // document.getElementById("desc").innerHTML = data.intro; // intro가 데이터에 없으므로 주석 처리
 
-    // 🌟 추천 이미지 갤러리 출력 로직 (변경 없음) 🌟
+    // 추천 이미지 갤러리 출력 로직
     const gallery = document.getElementById("image-gallery");
     gallery.innerHTML = ''; 
     
@@ -263,7 +249,6 @@ function goToHome()
  }
 
 function goToOtherStyles() {
-    // 원하는 페이지 이름으로 변경 가능
     window.location.href = "other_F.html";
 }
 </script>
