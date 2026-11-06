@@ -108,9 +108,9 @@ resultData: 각 얼굴형에 대한 모든 콘텐츠 정보를 담고 있는 핵
 
 label: URLSearchParams를 사용하여 index.html에서 전달된 최종 분석 결과 값을 저장
 
-동적 출력 로직: label을 키로 사용하여 resultData[label]에 접근, 결과를 document.getElementById를 이용해 ```<div id="result">, ```<div id="feature-content">, ```<ul id="strategy-content"> 등에 삽입
+동적 출력 로직: label을 키로 사용하여 resultData[label]에 접근, 결과를 document.getElementById를 이용해 ```<div id="result">, <div id="feature-content">, <ul id="strategy-content">``` 등에 삽입
 
-이미지 갤러리: data.recommendationImages 배열을 순회하며 <img class="recommend-image"> 태그를 동적으로 생성하여 <div id="image-gallery">에 추가
+이미지 갤러리: data.recommendationImages 배열을 순회하며 ```<img class="recommend-image">``` 태그를 동적으로 생성하여 ```<div id="image-gallery">```에 추가
 
 goToHome(): 사용자를 분석 시작 화면으로 되돌림
 
